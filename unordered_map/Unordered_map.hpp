@@ -33,6 +33,7 @@ public:
   T& at(const Key& key);
   size_type count(const Key& key);
   Unordered_map();
+  ~Unordered_map();
 
 private:
   struct Element;

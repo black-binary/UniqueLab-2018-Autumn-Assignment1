@@ -1,4 +1,5 @@
 #include "Unordered_map.hpp"
+#define INIT_SIZE 21788233
 
 using size_type = Unordered_map::size_type;
 using key_type = Unordered_map::key_type;
@@ -18,18 +19,40 @@ struct Unordered_map::Header
 
 size_type Unordered_map::Hash(const key_type &key)
 {
-	register unsigned int hash_value = 0;
+	register unsigned int hash= 0;
 	for(int i = 0; i < key.size(); i++)
 	{
-		hash_value = hash_value * 65599 + key[i];
+		//hash_value = hash_value * 65599 + key[i];
+		hash = key[i] + (hash << 6) + (hash << 16) - hash;
+		//hash = key[i] + hash * 37;
 	}
-	return hash_value % table_size_;
+	return hash % table_size_;
+	//return std::hash<key_type>()(key) % table_size_;
 }
 
 Unordered_map::Unordered_map()
 {
-	table_ = new Header[233]();
-	table_size_ = 233;
+	table_ = new Header[INIT_SIZE]();
+	table_size_ = INIT_SIZE;
+	size_ = 0;
+}
+
+void Unordered_map::clear()
+{
+	for(unsigned long long i = 0;i < table_size_; i++)
+	{
+		Element *current = table_[i].list_;
+		Element *next = NULL;
+		while(current)
+		{
+			next = current->next_;
+			delete current;
+			current = next;
+		}
+	}
+	delete[] table_;
+	table_ = new Header[INIT_SIZE]();
+	table_size_ = INIT_SIZE;
 	size_ = 0;
 }
 
@@ -45,11 +68,12 @@ size_type Unordered_map::size() const
 
 void Unordered_map::insert(const value_type& value)
 {
-	CheckAndExpand();
+	//CheckAndExpand();
 	unsigned int hash = Hash(value.first);
 	Element *element = new Element(value);
 	erase(value.first);
 	Insert(element);
+	size_++;
 	/*
 	Element *current = table_[hash].list_;
 	Element *prev = NULL;
@@ -75,12 +99,12 @@ void Unordered_map::insert(const value_type& value)
 	*/
 }
 
-void Unordered_map::Insert(Element *element) //insert into the empty table
+void Unordered_map::Insert(Element *element)
 {
 	unsigned int hash = Hash(element->item_.first);
 	element->next_ = NULL;
 	Element *current = table_[hash].list_;
-	table_[hash].list_=element;
+	table_[hash].list_ = element;
 	if(current)
 	{
 		element->next_ = current;
@@ -116,6 +140,7 @@ void Unordered_map::erase(const key_type &key)
 				prev->next_ = current->next_;
 			}
 			delete current;
+			size_--;
 			return;
 		}
 		prev = current;
@@ -148,3 +173,20 @@ void Unordered_map::CheckAndExpand()
 	}
 }
 
+size_type Unordered_map::count(const Key &key)
+{
+	try
+	{
+		at(key);
+	}
+	catch(const char* s)
+	{
+		return 0;
+	}
+	return 1;
+}
+
+Unordered_map::~Unordered_map()
+{
+	delete[] table_;
+}
