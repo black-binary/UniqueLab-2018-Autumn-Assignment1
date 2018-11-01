@@ -11,11 +11,12 @@ typedef typename std::priority_queue<double, std::vector<double>> Priority_queue
 #include <vector>
 #include <functional>
 
+//#define private: public:
 using T = double;
 using Container = std::vector<T>;
 using Compare = std::less<T>;
 
-class Priorty_queue {
+class Priority_queue {
 public:
   typedef Container     container_type;
   typedef typename      container_type::value_type value_type;
@@ -31,7 +32,15 @@ public:
   void pop();
 
 private:
-  // TODO
-}; // TODO
+  container_type heap_;
+  void PercolateUp(size_type index);
+  void PercolateDown(size_type index);
+  size_type LeftChild(size_type index);
+  size_type RightChild(size_type index);
+  size_type Parent(size_type index);
+  size_type CheckIndex(size_type index);
+  bool IsExist(size_type index);
+  value_type& GetValue(size_type index);
+};
 
 #endif

@@ -9,6 +9,8 @@ typedef typename std::unordered_map<std::string, double> Unordered_map;
 #define _UNORDERD_MAP_HPP
 
 #include <string>
+#include <vector>
+
 using Key = std::string;
 using T = double;
 
@@ -30,9 +32,18 @@ public:
   void erase(const key_type& key);
   T& at(const Key& key);
   size_type count(const Key& key);
+  Unordered_map();
 
 private:
-  // TODO
+  struct Element;
+  struct Header;
+  size_type Hash(const key_type& key);
+  void CheckAndExpand();
+  void Insert(Element *elements);
 
-}; // TODO
+private:
+  Header *table_;
+  size_type table_size_;
+  unsigned int size_;
+};
 #endif
