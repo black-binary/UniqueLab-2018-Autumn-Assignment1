@@ -28,8 +28,8 @@ size_type Unordered_map::Hash(const key_type &key)
 
 Unordered_map::Unordered_map()
 {
-	table_ = new Header[23333]();
-	table_size_ = 23333;
+	table_ = new Header[233]();
+	table_size_ = 233;
 	size_ = 0;
 }
 
@@ -45,10 +45,14 @@ size_type Unordered_map::size() const
 
 void Unordered_map::insert(const value_type& value)
 {
-	//CheckAndExpand();
+	CheckAndExpand();
 	unsigned int hash = Hash(value.first);
 	Element *element = new Element(value);
-	Element *&current = table_[hash].list_;
+	erase(value.first);
+	Insert(element);
+	/*
+	Element *current = table_[hash].list_;
+	Element *prev = NULL;
 	while(current)
 	{
 		if(current->item_.first == value.first)
@@ -56,28 +60,37 @@ void Unordered_map::insert(const value_type& value)
 			current->item_.second = value.second;
 			return;
 		}
+		prev = current;
 		current = current->next_;
 	}
-	current = element;
+	if(prev)
+	{
+		prev->next_ = current;
+	}
+	else
+	{
+		table_[hash].list_ = element;
+	}
 	size_++;
+	*/
 }
 
 void Unordered_map::Insert(Element *element) //insert into the empty table
 {
 	unsigned int hash = Hash(element->item_.first);
 	element->next_ = NULL;
-	Element *&current = table_[hash].list_;
-	while(current)
+	Element *current = table_[hash].list_;
+	table_[hash].list_=element;
+	if(current)
 	{
-		current = current->next_;
+		element->next_ = current;
 	}
-	current = element;
 }
 
 T& Unordered_map::at(const Key& key)
 {
 	unsigned int hash = Hash(key);
-	Element *&current = table_[hash].list_;
+	Element *current = table_[hash].list_;
 	while(current)
 	{
 		if(current->item_.first == key)
@@ -92,7 +105,7 @@ T& Unordered_map::at(const Key& key)
 void Unordered_map::erase(const key_type &key)
 {
 	unsigned int hash = Hash(key);
-	Element *&current = table_[hash].list_;
+	Element *current = table_[hash].list_;
 	Element *prev = NULL;
 	while(current)
 	{
@@ -108,7 +121,7 @@ void Unordered_map::erase(const key_type &key)
 		prev = current;
 		current = current->next_;
 	}
-	throw "Nothing here, what the fxxk r u doing??";
+	//throw "Nothing here, what the fxxk r u doing??";
 }
 
 void Unordered_map::CheckAndExpand()
