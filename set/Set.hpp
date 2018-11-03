@@ -20,9 +20,27 @@ public:
   void insert(const key_type& key);
   size_type erase(const key_type& key);
   size_type count(const key_type& key);
+  Set();
+  ~Set();
+  struct Node;
 
 private:
-  // TODO
-}; // TODO
+  Node *root_;
+  bool flag_;
+  size_type size_;
+  Node* RotateLeft(Node *h);
+  Node* RotateRight(Node *h);
+  Node* Insert(Node *h, const key_type key);
+  Node* NewNode(const key_type key);
+  Node *Search(const key_type key);
+  Node *FixUp(Node *h);
+  Node *MoveRedLeft(Node *h);
+  Node *DeleteMin(Node *h);
+  Node *FindMin(Node *h);
+  Node *Delete(Node *h, const key_type &key);
+  void DeleteAll(Node *h);
+  void ColorFlip(Node *h);
+  bool IsRed(Node *h);
+};
 
 #endif
