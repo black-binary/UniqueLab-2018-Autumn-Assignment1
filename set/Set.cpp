@@ -86,24 +86,10 @@ Node* Set::Insert(Node *h, const key_type key)
 	{
 		h->left_ = Insert(h->left_, key);
 	}
-	else// if(key > h->key_)
+	else
 	{
 		h->right_ = Insert(h->right_, key);
 	}
-	/*
-	if(IsRed(h->right_))
-	{
-		h = RotateLeft(h);
-	}
-	if(IsRed(h->left_) && h->left_ && IsRed(h->left_->left_))
-	{
-		h = RotateRight(h);
-	}
-	if(IsRed(h->left_) && IsRed(h->right_))
-	{
-		ColorFlip(h);
-	}
-	*/
 	return FixUp(h);
 }
 
@@ -120,7 +106,7 @@ Node *Set::Search(const key_type key)
 		{
 			current = current->left_;
 		}
-		else// if(key > current->key_)
+		else
 		{
 			current = current->right_;
 		}
@@ -211,29 +197,6 @@ Node *Set::Delete(Node *h, const key_type &key)
 		{
 			h = RotateRight(h);
 		}
-		/*
-		if(key == h->key_)
-		{
-			Node *right_min = FindMin(h->right_);
-			if(right_min)
-			{
-				h->key_ = right_min->key_;
-				h->right_ = DeleteMin(h->right_);
-			}
-			else
-			{
-				delete h;
-				return NULL;
-			}
-		}
-		else
-		{
-			if(!IsRed(h->right_) && h->right_ && !IsRed(h->right_->left_))
-			{
-				MoveRedLeft(h);
-			}
-			h->right_ = Delete(h->right_, key);
-		}*/
 		if(key == h->key_ && h->right_ == NULL)
 		{
 			delete h;
