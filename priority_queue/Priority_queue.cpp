@@ -60,7 +60,7 @@ void Priority_queue::PercolateUp(size_type index)
 {
 	value_type parent = Parent(index);
 	value_type current = index;
-	while(IsExist(parent) && GetValue(parent) > GetValue(current))
+	while(IsExist(parent) && GetValue(parent) < GetValue(current))
 	{
 		swap(GetValue(parent), GetValue(current));
 		current = parent;
@@ -78,11 +78,11 @@ void Priority_queue::PercolateDown(size_type index)
 		right = RightChild(current);
 		if(IsExist(left) && IsExist(right))
 		{
-			size_type smaller = GetValue(left) < GetValue(right) ? left : right;
-			if(GetValue(smaller) < GetValue(current))
+			size_type bigger = GetValue(left) > GetValue(right) ? left : right;
+			if(GetValue(bigger) > GetValue(current))
 			{
-				swap(GetValue(smaller), GetValue(current));
-				current = smaller;
+				swap(GetValue(bigger), GetValue(current));
+				current = bigger;
 			}
 			else
 			{
@@ -91,7 +91,7 @@ void Priority_queue::PercolateDown(size_type index)
 		}
 		else if(IsExist(left))
 		{
-			if(GetValue(left) < GetValue(current))
+			if(GetValue(left) > GetValue(current))
 			{
 				swap(GetValue(left), GetValue(current));
 			}

@@ -1,3 +1,4 @@
+//#define TEST_DEBUG 
 #ifdef TEST_DEBUG
 #define _UNORDERD_MAP_HPP
 #include <unordered_map>
@@ -10,6 +11,12 @@ typedef typename std::unordered_map<std::string, double> Unordered_map;
 
 #include <string>
 #include <vector>
+#include <list>
+#include <algorithm>
+
+using std::list;
+using std::find;
+using std::iterator;
 
 using Key = std::string;
 using T = double;
@@ -36,15 +43,11 @@ public:
   ~Unordered_map();
 
 private:
-  struct Element;
-  struct Header;
   size_type Hash(const key_type& key);
-  void CheckAndExpand();
-  void Insert(Element *elements);
 
 private:
-  Header *table_;
+  list<value_type> **table_;
   size_type table_size_;
-  unsigned int size_;
+  size_type size_;
 };
 #endif
